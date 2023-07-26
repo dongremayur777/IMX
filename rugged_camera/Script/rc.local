@@ -1,0 +1,11 @@
+# set ip statically
+ifconfig eth0 192.168.0.80
+
+#100mbps
+ethtool -s eth0 speed 100 duplex full
+
+# RTSP protocol streaming Pipeline
+gst-variable-rtsp-server -p 9001 -u "v4l2src device=/dev/video0  ! videoconvert ! vpuenc_h264 ! rtph264pay name=pay0 pt=96"
+
+# UDP protocol streaming Pipelins
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! vpuenc_h264 ! rtph264pay ! udpsink host=192.168.0.87 port=9001
